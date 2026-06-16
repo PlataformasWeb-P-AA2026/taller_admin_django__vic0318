@@ -3,10 +3,18 @@ from .models import Museo, GuiaMuseo, Exhibicion
 
 @admin.register(Museo)
 class MuseoAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'ciudad', 'anio_fundacion')
+    list_display = ('nombre', 'ciudad', 'anio_fundacion', 'costo_total_produccion_display', 'guias_mas_experimentados_display')
     search_fields = ('nombre', 'ciudad')
     list_filter = ('ciudad', 'anio_fundacion')
     ordering = ('nombre',)
+
+    def costo_total_produccion_display(self, obj):
+        return f"${obj.costo_total_produccion:,.2f}"
+    costo_total_produccion_display.short_description = "Costo Total Producción"
+
+    def guias_mas_experimentados_display(self, obj):
+        return obj.guias_mas_experimentados
+    guias_mas_experimentados_display.short_description = "Guía(s) con más experiencia"
 
 @admin.register(GuiaMuseo)
 class GuiaMuseoAdmin(admin.ModelAdmin):

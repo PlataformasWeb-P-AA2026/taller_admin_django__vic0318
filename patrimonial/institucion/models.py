@@ -8,6 +8,20 @@ class Museo(models.Model):
     def __str__(self):
         return self.nombre
 
+    @property
+    def costo_total_produccion(self):
+        total = self.guias.aggregate(total=models.Sum('exhibiciones__costo_produccion'))['total']
+        return total or 0.0
+
+    @property
+    def guias_mas_experimentados(self):
+        max_exp = self.guias.aggregate(max_exp=models.Max('anios_experiencia_guia'))['max_exp']
+        if max_exp is None:
+            return "Sin guías"
+        guias_top = self.guias.filter(anios_experiencia_guia=max_exp)
+        nombres = [g.nombre_completo for g in guias_top]
+        return ", ".join(nombres)
+
     class Meta:
         verbose_name = "Museo"
         verbose_name_plural = "Museos"
